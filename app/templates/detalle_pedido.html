@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Mi pedido{% endblock %}
+{% block content %}
+<h1>Pedido #{{ pedido.id }}</h1>
+<p>Estado: {{ pedido.estado.value }}</p>
+<p>Total: ${{ pedido.monto }}</p>
+
+<table border="1" cellpadding="6">
+    <tr><th>Producto</th><th>Aclaracion</th><th></th></tr>
+    {% for ap in articulos %}
+    <tr>
+        <td>{{ ap.producto.descripcion }}</td>
+        <td>{{ ap.aclaracion }}</td>
+        <td>
+            <form action="{{ url_for('pedidos.editar_producto_pedido', pedido_id=pedido.id, articulo_id=ap.id) }}" method="post" style="display:inline">
+                <input type="text" name="aclaracion" placeholder="Nueva aclaracion">
+                <button type="submit">Editar</button>
+            </form>
+            <form action="{{ url_for('pedidos.eliminar_producto', pedido_id=pedido.id, articulo_id=ap.id) }}" method="post" style="display:inline">
+                <button type="submit">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3">El pedido no tiene productos.</td></tr>
+    {% endfor %}
+</table>
+
+<form action="{{ url_for('pedidos.seleccionar_metodo_pago', pedido_id=pedido.id) }}" method="post">
+    <label>Metodo de pago:
+        <select name="metodo_pago">
+            <option value="MercadoPago">Mercado Pago</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Efectivo">Efectivo</option>
+        </select>
+    </label>
+    <button type="submit">Confirmar pago</button>
+</form>
+
+<a href="{{ url_for('pedidos.listar_productos', pedido_id=pedido.id) }}">Seguir agregando</a> |
+<a href="{{ url_for('estados.mostrar_estados', pedido_id=pedido.id) }}">Ver estado</a>
+{% endblock %}

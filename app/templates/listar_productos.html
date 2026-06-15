@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Productos{% endblock %}
+{% block content %}
+<h1>Productos</h1>
+
+<nav>
+    <a href="{{ url_for('pedidos.listar_productos', pedido_id=pedido_id) }}">Todas</a>
+    {% for c in categorias %}
+        | <a href="{{ url_for('pedidos.listar_productos', pedido_id=pedido_id, categoria=c) }}">{{ c }}</a>
+    {% endfor %}
+</nav>
+
+<p>Cantidad de productos: {{ productos|length }}</p>
+
+<ul>
+    {% for p in productos %}
+    <li>
+        <a href="{{ url_for('pedidos.detalle_producto', pedido_id=pedido_id, producto_id=p.id) }}">
+            {{ p.descripcion }}
+        </a> — ${{ p.precio_unitario }}
+    </li>
+    {% endfor %}
+</ul>
+
+<form action="{{ url_for('pedidos.cancelar_pedido', pedido_id=pedido_id) }}" method="post">
+    <button type="submit">Cancelar pedido</button>
+</form>
+<a href="{{ url_for('pedidos.detalle_pedido', pedido_id=pedido_id) }}">Ver mi pedido</a>
+{% endblock %}

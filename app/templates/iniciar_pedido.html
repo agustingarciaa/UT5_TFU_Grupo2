@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Iniciar pedido{% endblock %}
+{% block content %}
+<h1>Bienvenido</h1>
+<form action="{{ url_for('pedidos.registrar_pedido') }}" method="post">
+    <button type="submit">Iniciar pedido</button>
+</form>
+{% endblock %}

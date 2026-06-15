@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ producto.descripcion }}{% endblock %}
+{% block content %}
+<h1>{{ producto.descripcion }}</h1>
+<p>Precio: ${{ producto.precio_unitario }}</p>
+
+<h3>Ingredientes</h3>
+<ul>
+    {% for ing in producto.ingredientes %}
+    <li>{{ ing }}</li>
+    {% else %}
+    <li>Sin ingredientes cargados</li>
+    {% endfor %}
+</ul>
+
+<form action="{{ url_for('pedidos.agregar_producto', pedido_id=pedido_id, producto_id=producto.id) }}" method="post">
+    <label>Aclaracion: <input type="text" name="aclaracion"></label>
+    <button type="submit">Agregar al pedido</button>
+</form>
+
+<a href="{{ url_for('pedidos.listar_productos', pedido_id=pedido_id) }}">Volver</a>
+{% endblock %}

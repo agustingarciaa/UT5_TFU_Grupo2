@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Estado del pedido{% endblock %}
+{% block content %}
+<h1>Estado del pedido #{{ pedido_id }}</h1>
+
+{% if estado %}
+<p>Estado actual: <strong>{{ estado.value }}</strong></p>
+{% else %}
+<p>No se encontro el pedido.</p>
+{% endif %}
+
+<h3>Estados posibles</h3>
+<ul>
+    {% for e in estados %}
+    <li>{{ e.value }}</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ url_for('pedidos.detalle_pedido', pedido_id=pedido_id) }}">Volver al pedido</a>
+{% endblock %}
