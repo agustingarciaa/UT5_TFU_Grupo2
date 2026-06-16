@@ -1,25 +1,19 @@
+from app.extensions import db
 from app.domain.producto import Producto
 
 
 class ProductoRepository:
-    """Catalogo de productos (datos de ejemplo en memoria)."""
-
-    _productos = {
-        1: Producto(1, "Pizza Muzzarella", 8500.0, "Pizzas",
-                    ["Muzzarella", "Salsa de tomate", "Oregano"]),
-        2: Producto(2, "Empanada de carne", 1200.0, "Empanadas",
-                    ["Carne", "Cebolla", "Huevo"]),
-        3: Producto(3, "Coca-Cola 500ml", 1500.0, "Bebidas", []),
-    }
+    """Catalogo de productos contra la base de datos."""
 
     def obtener_producto_x_id(self, producto_id) -> Producto:
-        return self._productos.get(int(producto_id))
+        return db.session.get(Producto, int(producto_id))
 
     def obtener_productos_x_categoria(self, categoria: str = None) -> list:
-        productos = list(self._productos.values())
+        query = Producto.query
         if categoria:
-            productos = [p for p in productos if p.categoria == categoria]
-        return productos
+            query = query.filter_by(categoria=categoria)
+        return query.all()
 
     def obtener_categorias(self) -> list:
-        return sorted({p.categoria for p in self._productos.values() if p.categoria})
+        filas = db.session.query(Producto.categoria).distinct().all()
+        return sorted(c[0] for c in filas if c[0])

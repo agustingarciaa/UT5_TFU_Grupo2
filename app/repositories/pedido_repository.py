@@ -1,23 +1,29 @@
+from app.extensions import db
 from app.domain.pedido import Pedido
 
 
 class PedidoRepository:
-    """Persistencia de Pedidos (en memoria por ahora)."""
-
-    _pedidos = {}      # id -> Pedido
-    _next_id = 1
+    """Persistencia de Pedidos contra la base de datos."""
 
     def obtener_pedido_x_id(self, pedido_id) -> Pedido:
-        return self._pedidos.get(int(pedido_id))
+        return db.session.get(Pedido, int(pedido_id))
 
     def crear_pedido(self) -> Pedido:
-        pedido = Pedido(id=PedidoRepository._next_id)
-        self._pedidos[pedido.id] = pedido
-        PedidoRepository._next_id += 1
+        pedido = Pedido()
+        db.session.add(pedido)
+        db.session.commit()
         return pedido
 
-    def borrar_pedido(self, pedido_id) -> None:
-        self._pedidos.pop(int(pedido_id), None)
+    def borrar_pedido(self, pedido_id) -> bool:
+        pedido = self.obtener_pedido_x_id(pedido_id)
+        if not pedido:
+            return False
+        db.session.delete(pedido)
+        db.session.commit()
+        return True
+
+    def guardar(self) -> None:
+        db.session.commit()
 
     def listar(self) -> list:
-        return list(self._pedidos.values())
+        return Pedido.query.all()
